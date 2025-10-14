@@ -20,6 +20,9 @@ COPY . .
 # NOTE: destination changed to /app/src/serving/model to match inference.py's path
 COPY src/serving/model /app/src/serving/model
 
+# ensure the directory exists
+RUN mkdir -p /app/model
+
 # Copy MLflow run (artifacts + metadata) to the flat /app/model convenience path
 COPY src/serving/model/v1.0/artifacts/model /app/model
 COPY src/serving/model/v1.0/artifacts/feature_columns.txt /app/model/feature_columns.txt
