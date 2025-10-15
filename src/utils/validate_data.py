@@ -14,8 +14,23 @@ def validate_telco_data(df) -> Tuple[bool, List[str]]:
     print("🔍 Starting data validation with Great Expectations...")
     
     # Convert pandas DataFrame to Great Expectations Dataset
-    ge_df = ge.dataset.PandasDataset(df)
-    
+    # Use the correct API for the installed version of Great Expectations
+    try:
+        # Try the newer API first
+        import great_expectations as ge
+        ge_df = ge.dataset.PandasDataset(df)
+        print("   ✅ Using Great Expectations PandasDataset API")
+    except (ImportError, AttributeError):
+        try:
+            # Alternative approach
+            from great_expectations.dataset import PandasDataset
+            ge_df = PandasDataset(df)
+            print("   ✅ Using Great Expectations direct import API")
+        except ImportError:
+            # Final fallback - create a simple validation
+            print("   ⚠️  Great Expectations not properly configured, using basic validation...")
+            return _basic_validation(df)
+
     # === SCHEMA VALIDATION - ESSENTIAL COLUMNS ===
     print("   📋 Validating schema and required columns...")
     
@@ -122,3 +137,28 @@ def validate_telco_data(df) -> Tuple[bool, List[str]]:
         print(f"   Failed expectations: {failed_expectations}")
     
     return results["success"], failed_expectations
+
+
+def _basic_validation(df) -> Tuple[bool, List[str]]:
+    """Basic validation fallback when Great Expectations is not available."""
+    failed_checks = []
+    
+    # Check for required columns
+    required_columns = ["customerID", "gender", "Partner", "Dependents", "tenure", "MonthlyCharges"]
+    for col in required_columns:
+        if col not in df.columns:
+            failed_checks.append(f"Missing required column: {col}")
+    
+    # Check for null values in critical columns
+    critical_cols = ["tenure", "MonthlyCharges"]
+    for col in critical_cols:
+        if col in df.columns and df[col].isnull().sum() > 0:
+            failed_checks.append(f"Null values found in {col}")
+    
+    is_valid = len(failed_checks) == 0
+    if is_valid:
+        print("✅ Basic validation PASSED")
+    else:
+        print(f"❌ Basic validation FAILED: {failed_checks}")
+    
+    return is_valid, failed_checks

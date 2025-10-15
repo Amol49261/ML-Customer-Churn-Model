@@ -207,3 +207,6 @@ app = gr.mount_gradio_app(
     demo,          # Gradio interface
     path="/ui"     # URL path where Gradio will be accessible
 )
+
+if __name__ == "__main__":
+    demo.launch()

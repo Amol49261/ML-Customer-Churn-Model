@@ -36,10 +36,18 @@ def main(args):
     
     # === MLflow Setup - ESSENTIAL for experiment tracking ===
     # Configure MLflow to use local file-based tracking (not a tracking server)
+    # Define project root (parent directory of this script)
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    mlruns_path = args.mlflow_uri or f"file://{project_root}/mlruns"  # Local file-based tracking
+    # Define mlruns folder path safely across OS
+    mlruns_dir = os.path.join(project_root, "mlruns")
+    # Ensure the mlruns folder exists
+    os.makedirs(mlruns_dir, exist_ok=True)
+    # Build a proper file URI for MLflow (Windows compatible)
+    mlruns_path = args.mlflow_uri or f"file:///{mlruns_dir.replace(os.sep, '/')}"
+    # Set up MLflow tracking and experiment
     mlflow.set_tracking_uri(mlruns_path)
-    mlflow.set_experiment(args.experiment)  # Creates experiment if doesn't exist
+    mlflow.set_experiment(args.experiment)
+
 
     # Start MLflow run - all subsequent logging will be tracked under this run
     with mlflow.start_run():
@@ -221,7 +229,7 @@ def main(args):
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description="Run churn pipeline with XGBoost + MLflow")
     p.add_argument("--input", type=str, required=True,
-                   help="path to CSV (e.g., data/raw/Telco-Customer-Churn.csv)")
+                   help="path to CSV (e.g., data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv)")
     p.add_argument("--target", type=str, default="Churn")
     p.add_argument("--threshold", type=float, default=0.35)
     p.add_argument("--test_size", type=float, default=0.2)
@@ -235,8 +243,8 @@ if __name__ == "__main__":
 """
 # Use this below to run the pipeline:
 
-python scripts/run_pipeline.py \                                            
-    --input data/raw/Telco-Customer-Churn.csv \
+python scripts/run_pipeline.py \\
+    --input data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv \\
     --target Churn
 
 """

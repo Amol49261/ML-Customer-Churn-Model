@@ -24,7 +24,7 @@ COPY src/serving/model /app/src/serving/model
 RUN mkdir -p /app/model
 
 # Copy MLflow run (artifacts + metadata) to the flat /app/model convenience path
-COPY src/serving/model/v1.0/artifacts/model /app/model
+COPY src/serving/model/v1.0/artifacts/model.pkl /app/model
 COPY src/serving/model/v1.0/artifacts/feature_columns.txt /app/model/feature_columns.txt
 COPY src/serving/model/v1.0/artifacts/preprocessing.pkl /app/model/preprocessing.pkl
 
