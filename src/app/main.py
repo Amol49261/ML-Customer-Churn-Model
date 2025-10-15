@@ -14,7 +14,7 @@ Architecture:
 from fastapi import FastAPI
 from pydantic import BaseModel
 import gradio as gr
-from src.serving.inference import predict  # Core ML inference logic
+from serving.inference import predict  # Core ML inference logic
 
 # Initialize FastAPI application
 app = FastAPI(
@@ -176,14 +176,14 @@ demo = gr.Interface(
         gr.Number(label="Total Charges ($)", value=85.0, minimum=0, maximum=10000),
     ],
     outputs=gr.Textbox(label="Churn Prediction", lines=2),
-    title="🔮 Telco Customer Churn Predictor",
+    title="Telco Customer Churn Predictor",
     description="""
     **Predict customer churn probability using machine learning**
     
     Fill in the customer details below to get a churn prediction. The model uses XGBoost trained on 
     historical telecom customer data to identify customers at risk of churning.
     
-    💡 **Tip**: Month-to-month contracts with fiber optic internet and electronic check payments 
+    **Tip**: Month-to-month contracts with fiber optic internet and electronic check payments 
     tend to have higher churn rates.
     """,
     examples=[
