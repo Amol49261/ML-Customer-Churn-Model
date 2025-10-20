@@ -153,13 +153,17 @@ def main(args):
         # In production, consider using hyperparameter optimization tools like Optuna
         model = XGBClassifier(
             # Tree structure parameters
-            n_estimators=301,        # Number of trees (OPTIMIZED)
-            learning_rate=0.034,     # Step size shrinkage (OPTIMIZED)  
-            max_depth=7,            # Maximum tree depth (OPTIMIZED)
+            n_estimators=730,                    # Number of trees (OPTIMIZED)
+            learning_rate=0.082925342633425,    # Step size shrinkage (OPTIMIZED)  
+            max_depth=4,                        # Maximum tree depth (OPTIMIZED)
             
             # Regularization parameters
-            subsample=0.95,         # Sample ratio of training instances
-            colsample_bytree=0.98,  # Sample ratio of features for each tree
+            subsample=0.9670994216456759,       # Sample ratio of training instances
+            colsample_bytree=0.8782401316355544, # Sample ratio of features for each tree
+            min_child_weight=2,                 # Minimum sum of instance weight in a child
+            gamma=3.7793042426194754,           # Minimum loss reduction required to make a split
+            reg_alpha=3.2629569504540896,       # L1 regularization
+            reg_lambda=1.0802581115315042,      # L2 regularization
             
             # Performance parameters
             n_jobs=-1,              # Use all CPU cores
